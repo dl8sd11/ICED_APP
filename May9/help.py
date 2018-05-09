@@ -1,6 +1,6 @@
-if (A):
+if A:
     do_something()
-elif(B):  #非必要
+elif B:  #非必要
     do_something_else()
 else:   #非必要
     do_anything()
@@ -9,6 +9,11 @@ else:   #非必要
 # 如果A為假B為真:do_something_else()
 # 如果A為假B為假:do_anything()
 
+while A:
+    do_something():
+
+#重複執行do_something直到A為假
+    
 for a in range(b):
     print(a)
 # >0
