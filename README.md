@@ -5,4 +5,4 @@
 Apirl10 Python基礎認識 \
 Apirl17 1A2B猜數字-認識tkinter \
 May9 1A2B續-流程控制 \
-May16 基本物件導向程式設計 \
+May16 圈圈叉叉-基本物件導向程式設計
