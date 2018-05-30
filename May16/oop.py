@@ -15,6 +15,7 @@ class slug:
     def print_feet():
         print("FATAL ERROR: I have no feet!!!")
 
+    @staticmethod
     def test():
         print("JI")
 
