@@ -20,5 +20,6 @@ class slug:
 
 niceslug = slug("gray")
 niceslug.print_feet()
-slug.set_color(niceslug,"red")
+niceslug.set_color("blue")
+# slug.set_color(niceslug,"red")
 print(niceslug.get_color())

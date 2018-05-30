@@ -1,8 +1,11 @@
 import tkinter as tk
 
+
 def check_input(input):
     if not(input.isdigit()): #檢查是否只包含數字
         print("輸入只能包含數字")
+
+
 def check_ab():
     user_input = guess_entry.get() #取得使用者輸入
     guess_entry.delete(0,tk.END) #清空guess_entry
