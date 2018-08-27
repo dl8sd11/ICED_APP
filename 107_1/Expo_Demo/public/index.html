@@ -1,0 +1,94 @@
+<html>
+<head>
+  <title>提問區beta</title>
+  <script src="js/vue.js"></script>
+  <script src="js/socket.io.js"></script>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/question.css">
+</head>
+<body>
+  <nav class="navbar navbar-dark bg-dark navbar-expand-lg">
+    <a class="navbar-brand" href="#">社員專區</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">提問區<span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="./submitcode.html">交作業區</a>
+        </li>
+      </ul>
+
+    </div>
+  </nav>
+  <div id="App">
+    <div class="container">
+      <h2>{{group}}提問區</h2>
+      <label for="name">姓名</label>
+      <div class="input-group">
+        <input type="text" v-model="qName" id="name" class="form-control" placeholder="匿名者">
+      </div>
+      <label for="question">你的問題</label>
+      <textarea class="form-control" v-model="qText" aria-label="你的問題" placeholder="你的問題"></textarea>
+      <button class="btn btn-primary" v-on:click="submit">Submit</button>
+
+      <div v-if="obj">
+        <ul>
+          <li class="questionli" v-for="question in obj.questions">
+            {{question.name}} 在{{question.time}}問:
+            <br>
+            {{question.text}}
+            <div v-if="question.answer">
+              <hr>
+              回覆:<br>
+              {{question.answer}}
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+  <script>
+    var socket = io.connect(window.location.origin);
+  
+  var app = new Vue({
+   el: '#App',
+   data: {
+       group: '應用組',
+       obj: null,
+       qName: null,
+       qText: null
+     },
+   methods: {
+     updateQs: function(event) {
+        socket.emit('getQs','plz');
+     },
+     submit: function(){
+       var d = new Date();
+       socket.emit('newQ',{
+         "name":(this.qName?this.qName:'匿名者'),
+         "text":this.qText,
+         "answer":null,
+         "time": d.getHours() +":"+ d.getMinutes()
+       });
+       this.qName = '';
+       this.qText = '';
+     }
+   }
+  })
+
+  socket.on('connect',function(data){
+    socket.emit('join','Hello World');
+    socket.emit('getQs','plz');
+  });
+  socket.on('sendQs',function(data){
+    app.obj = data;
+  });
+  </script>
+</body>
+</html>
