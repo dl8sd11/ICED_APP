@@ -2,14 +2,18 @@
 <html>
 <head>
   <title>提問區beta</title>
+  <meta charset="UTF-8">
   <script src="js/vue.js"></script>
   <script src="js/socket.io.js"></script>
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="css/question.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" type="text/css" rel="stylesheet">
+  <link rel="stylesheet" href="./css/chatroom.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
     <nav class="navbar navbar-dark bg-dark navbar-expand-lg">
-        <a class="navbar-brand" href="#">社員專區</a>
+        <a class="navbar-brand" href="#">社團博覽聊天室</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -17,45 +21,55 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-              <a class="nav-link" href="#">提問區<span class="sr-only">(current)</span></a>
+              <a class="nav-link" href="#">首頁<span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="./submitcode.html">交作業區</a>
+              <a class="nav-link" href="http://iced.nehs.hc.edu.tw">ICED</a>
             </li>
           </ul>
     
         </div>
       </nav>
       <div id="App">
-        <div class="container">
-          <h2>{{group}}提問區</h2>
-          <label for="name">姓名</label>
-          <div class="input-group">
-            <input type="text" v-model="qName" id="name" class="form-control" placeholder="匿名者">
-          </div>
-          <label for="question">你的問題</label>
-          <textarea class="form-control" v-model="qText" aria-label="你的問題" placeholder="你的問題"></textarea>
-          <button class="btn btn-primary" v-on:click="submit">Submit</button>
-    
-          <div v-if="obj">
-            <ul>
-              <li class="questionli" v-for="question in obj.message">
-                {{question.name}} 在{{question.time}}問:
-                <br>
-                {{question.text}}
-              </li>
-            </ul>
-          </div>
-        </div>
+          <div class="messaging" >
+              
+              <div class="mesgs" >
+                <div class="msg_history" id="msgb">
+                  
+                 
+                  <div v-if="obj">
+                      <div class="incoming_msg" v-for="msg in obj.message">
+                        <div class="received_msg">
+                          <div class="received_withd_msg">
+                            <p>{{msg.text}}</p>
+                            <span class="time_date"> {{msg.time}}    |    Today</span></div>
+                        </div>
+                      </div>
+                    </div>
+
+
+
+
+                </div>
+                <div class="type_msg">
+                  <div class="input_msg_write">
+                    <input type="text"  v-model="qText" class="write_msg" placeholder="Type a message" />
+                    <button class="msg_send_btn" v-on:click="submit" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
     
       </div>
       <script>
         var socket = io.connect(window.location.origin+":5000");
-      
+        function pad2(number) {
+          return (number < 10 ? '0' : '') + number
+        }
+
       var app = new Vue({
        el: '#App',
        data: {
-           group: '應用組',
            obj: null,
            qName: null,
            qText: null
@@ -63,13 +77,13 @@
        methods: {
          updateQs: function(event) {
             socket.emit('getQs','plz');
+            
          },
          submit: function(){
            var d = new Date();
            socket.emit('new_message',{
-             "name":(this.qName?this.qName:'匿名者'),
              "text":this.qText,
-             "time": d.getHours() +":"+ d.getMinutes()
+             "time": pad2(d.getHours()) +":"+ pad2(d.getMinutes())
            });
            this.qName = '';
            this.qText = '';
@@ -82,8 +96,13 @@
         socket.emit('get_data','plz');
       });
       socket.on('data_update',function(data){
+        let objDiv = document.getElementById("msgb");
+        if(objDiv.scrollTop + obj.offsetHeight == objDiv.scrollHeight){
+          setTimeout(function(){
+            objDiv.scrollTop = objDiv.scrollHeight;
+          },100);
+        }
         app.obj = JSON.parse(data);
-        console.log(data);
       });
       </script>
 </body>
