@@ -1,0 +1,13 @@
+h2{
+  color: #FFF;
+}
+ul{
+  padding: 0px;
+}
+.questionli{
+  margin-top: 10px;
+  padding: 10px;
+  color: #222;
+  background-color: #eeeeee;
+  list-style:none;
+}
